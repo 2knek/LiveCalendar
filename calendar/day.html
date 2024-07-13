@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Day Events</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="date"></h1>
+    <ul id="event-list"></ul>
+    <input type="text" id="new-event" placeholder="Add new event" />
+    <button onclick="addEvent()">Add Event</button>
+    <button onclick="goBack()">Back</button>
+    <button onclick="deleteEvent()">Delete</button>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const day = urlParams.get('day');
+        const month = urlParams.get('month');
+        const year = urlParams.get('year');
+        const events = JSON.parse(localStorage.getItem(`events_${month}_${year}_${day}`)) || [];
+        renderEvents();
+
+        document.getElementById("date").textContent = `Events for Day ${day}, ${monthNames[month]} ${year}`;
+
+        function renderEvents() {
+            const eventList = document.getElementById("event-list");
+            eventList.innerHTML = '';
+            events.forEach(event => {
+                const li = document.createElement("li");
+                li.textContent = event;
+                eventList.appendChild(li);
+            });
+        }
+
+        function addEvent() {
+            const newEvent = document.getElementById("new-event").value;
+            if (newEvent) {
+                events.push(newEvent);
+                localStorage.setItem(`events_${month}_${year}_${day}`, JSON.stringify(events));
+                renderEvents();
+                document.getElementById("new-event").value = '';
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function deleteEvent(index) {
+            events.splice(index, 1);
+            localStorage.setItem(`events_${month}_${year}_${day}`, JSON.stringify(events));
+            renderEvents();
+        }
+
+    </script>
+</body>
+</html>
