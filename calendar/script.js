@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const daysContainer = document.querySelector(".days");
 
     let currentMonth = 6; // July
-    let currentYear = 2023;
+    let currentYear = 2024;
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -181,11 +181,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 currentDay++;
             } else {
                 currentDay = 1;
-                nextMonth();
+                if (currentMonth < 11) {
+                    currentMonth++;
+                } else {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                generateDays();
+                updateMonthYearHeader();
             }
-            if (isSimulationRunning) {
-                runSimulation();
-            }
+            runSimulation();
         }, 1000);
     }
 
@@ -196,62 +201,53 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function highlightCurrentDay() {
         const dayElements = document.querySelectorAll(".day");
-        dayElements.forEach((day, index) => {
-            day.classList.remove("simulated-day");
-            if (index + 1 === currentDay) {
-                day.classList.add("simulated-day");
+        dayElements.forEach(dayElement => {
+            dayElement.classList.remove("simulated-day");
+            if (dayElement.textContent == currentDay) {
+                dayElement.classList.add("simulated-day");
             }
         });
     }
 
-    function nextMonth() {
-        currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
-        updateMonthYearHeader();
-        if (!localStorage.getItem(`events_${currentMonth}_${currentYear}`)) {
-            generateRandomEvents();
-        }
-        generateDays();
-    }
+    window.simulateDays = simulateDays;
+    window.stopSimulation = stopSimulation;
 
-    function previousMonth() {
-        currentMonth--;
-        if (currentMonth < 0) {
+    window.previousMonth = function() {
+        if (currentMonth > 0) {
+            currentMonth--;
+        } else {
             currentMonth = 11;
             currentYear--;
         }
-        updateMonthYearHeader();
-        if (!localStorage.getItem(`events_${currentMonth}_${currentYear}`)) {
-            generateRandomEvents();
-        }
+        currentDay = 1;
         generateDays();
+        updateMonthYearHeader();
     }
 
-    function nextYear() {
-        currentYear++;
-        updateMonthYearHeader();
-        if (!localStorage.getItem(`events_${currentMonth}_${currentYear}`)) {
-            generateRandomEvents();
+    window.nextMonth = function() {
+        if (currentMonth < 11) {
+            currentMonth++;
+        } else {
+            currentMonth = 0;
+            currentYear++;
         }
+        currentDay = 1;
         generateDays();
+        updateMonthYearHeader();
     }
 
-    function previousYear() {
+    window.previousYear = function() {
         currentYear--;
-        updateMonthYearHeader();
-        if (!localStorage.getItem(`events_${currentMonth}_${currentYear}`)) {
-            generateRandomEvents();
-        }
+        currentDay = 1;
         generateDays();
+        updateMonthYearHeader();
     }
 
-    window.simulateDays = simulateDays;
-    window.stopSimulation = stopSimulation;
-    window.nextMonth = nextMonth;
-    window.previousMonth = previousMonth;
-    window.nextYear = nextYear;
-    window.previousYear = previousYear;
+    window.nextYear = function() {
+        currentYear++;
+        currentDay = 1;
+        generateDays();
+        updateMonthYearHeader();
+    }
 });
+
