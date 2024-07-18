@@ -2,16 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Day Events</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1 id="date"></h1>
-    <ul id="event-list"></ul>
-    <input type="text" id="new-event" placeholder="Add new event" />
-    <button onclick="addEvent()">Add Event</button>
-    <button onclick="goBack()">Back</button>
-    <button onclick="deleteEvent()">Delete</button>
+    <div class="calendar-container">
+        <h1 id="date"></h1>
+        <ul id="event-list"></ul>
+        <input type="text" id="new-event" placeholder="Add new event">
+        <div class="controls">
+            <button onclick="addEvent()">Add Event</button>
+            <button onclick="goBack()">Back</button>
+            <button onclick="deleteEvent()">Delete</button>
+        </div>
+    </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
